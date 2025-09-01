@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TuDuList</title>
+    <style>
+      @font-face {
+        font-family: "Edwardian Script";
+        src: url("path/to/your/edwardian-script.woff2") format("woff2"),
+             url("path/to/your/edwardian-script.woff") format("woff");
+      }
+      body {
+        background-color: #dae1f5;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      .main {
+        color: black;
+        text-align: center;
+        font-size: 50px;
+        margin-bottom: 12px;
+        margin-top: 5px;
+        font-family: "Lucida Calligraphy", cursive;
+      }
+      .subMain {
+        color: purple;
+        text-align: center;
+        font-size: 60px;
+        margin-top: 0.1px;
+        font-family: fantasy;
+        margin-bottom: 0px;
+      }
+      .author {
+        text-align: center;
+        margin-top: 1px;
+        font-family: "Edwardian Script", "Times New Roman", serif;
+        font-size: 20px;
+      }
+
+      /* Task Section */
+      .container {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-top: 30px;
+      }
+
+      .task-list {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        width: 250px;
+        min-height: 300px;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+        flex-grow: 1;
+      }
+
+      .task-list h2 {
+        text-align: center;
+        margin-bottom: 15px;
+      }
+
+      .task {
+        background: #f9f9f9;
+        margin: 8px 0;
+        padding: 10px;
+        border-radius: 8px;
+        cursor: grab;
+        border-left: 5px solid purple;
+      }
+
+      .task h3 {
+        margin: 0;
+        font-size: 16px;
+        color: black;
+      }
+
+      .task p {
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: #555;
+      }
+
+      .task:active {
+        cursor: grabbing;
+      }
+
+      .add-task {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      input[type="text"], textarea {
+        padding: 8px;
+        border: 2px solid purple;
+        border-radius: 6px;
+        outline: none;
+        font-family: inherit;
+      }
+
+      textarea {
+        resize: none;
+        height: 60px;
+      }
+
+      button {
+        padding: 8px 12px;
+        background: purple;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: darkviolet;
+      }
+
+      /* Click Here Box */
+      .youtube-box {
+        position: relative;
+        width: 300px;
+        height: 100px;
+        border: 1px solid black;
+        margin: 40px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .youtube-link {
+        text-decoration: none;
+        color: blue;
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      .youtube-link:hover {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="main">TuDu</h1>
+    <h1 class="subMain">LIST</h1>
+    <p class="author">-Malhar Thombre</p>
+
+    <!-- Task input fields -->
+    <div class="add-task">
+      <input type="text" id="taskInput" placeholder="Enter task title..." />
+      <textarea id="taskDesc" placeholder="Enter task description..."></textarea>
+      <button onclick="addTask()">Add</button>
+    </div>
+
+    <!-- Task columns -->
+    <div class="container">
+      <div class="task-list" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h2>To Do</h2>
+      </div>
+
+      <div class="task-list" id="inprogress" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h2>In Progress </h2>
+      </div>
+
+      <div class="task-list" id="done" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h2>Done </h2>
+      </div>
+    </div>
+
+    <!-- Click here box for YouTube -->
+    <div class="youtube-box">
+      <a href="https://www.youtube.com/shorts/xHEgHjJvR94" target="_blank" class="youtube-link">Click here if you have any complain abouth the author.</a>
+    </div>
+
+    <script>
+      let taskId = 0;
+
+      function addTask() {
+        const titleInput = document.getElementById("taskInput");
+        const descInput = document.getElementById("taskDesc");
+        const taskTitle = titleInput.value.trim();
+        const taskDesc = descInput.value.trim();
+
+        if (taskTitle === "") return;
+
+        // Create task container
+        const task = document.createElement("div");
+        task.className = "task";
+        task.draggable = true;
+        task.id = "task" + taskId++;
+        task.ondragstart = drag;
+
+        // Task title
+        const titleEl = document.createElement("h3");
+        titleEl.textContent = taskTitle;
+        task.appendChild(titleEl);
+
+        // Task description
+        if (taskDesc !== "") {
+          const descEl = document.createElement("p");
+          descEl.textContent = taskDesc;
+          task.appendChild(descEl);
+        }
+
+        // Add to To Do list
+        document.getElementById("todo").appendChild(task);
+
+        // Reset inputs
+        titleInput.value = "";
+        descInput.value = "";
+      }
+
+      function allowDrop(event) {
+        event.preventDefault();
+      }
+
+      function drag(event) {
+        event.dataTransfer.setData("text", event.target.id);
+      }
+
+      function drop(event) {
+        event.preventDefault();
+        const taskId = event.dataTransfer.getData("text");
+        const task = document.getElementById(taskId);
+        event.target.closest(".task-list").appendChild(task);
+      }
+    </script>
+  </body>
+</html>
